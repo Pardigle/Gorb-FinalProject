@@ -4,7 +4,7 @@
     {% block directory %}
         <ol class="breadcrumb mb-1">
             <li class="breadcrumb-item">
-                <a href="{% url 'employees' %}" class="text-secondary text-decoration-none">Employees</a>
+                <a href="{% url 'employees' %}" class="text-secondary text-decoration-none">Home</a>
             </li>
             <li class="breadcrumb-item">
                 <a class="text-secondary text-decoration-none">Update Employee</a>
@@ -13,5 +13,27 @@
     {% endblock %}
 
     {% block content %}
-
+    <div class="container-fluid d-flex justify-content-center m-3 w-100">
+        <div class="card w-50 shadow-lg">
+            <h2 class="card-header">Update Employee</h2>
+            <div class="card-body">
+                <form class="form" method="POST"> {% csrf_token %}
+                    <div class="form-group">
+                        <label> Name: </label>
+                        <input class="form-control mb-4" type="text" name="name" required value="{{ employee.getName }}">
+                        <label> ID Number: </label>
+                        <input class="form-control mb-4" type="number" name="id_number" required value="{{ employee.getID }}">
+                        <label> Rate: </label>
+                        <input class="form-control mb-4" type="number" name="rate" required value="{{ employee.getRate }}">
+                        <label> Allowance (Optional): </label>
+                        <input class="form-control mb-4" type="number" name="allowance" value="{{ employee.getAllowance }}">
+                        <div class="d-flex w-100 justify-content-center">
+                            <button class="btn btn-outline-primary my-1 w-50" type="submit" name="button" value="submit">Submit</button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
     {% endblock %}

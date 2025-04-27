@@ -3,6 +3,7 @@
 <html>
 
     <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
         <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static '/bootstrap/css/custom.css' %}">
@@ -22,30 +23,34 @@
                 <div>
                     <ul class="nav mb-1">
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'employees' %}">Employees</a>
+                            <a class="nav-link text-white" href="{% url 'employees' %}" style="font-weight: 200;">Employees</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'payslips' %}">Payslips</a>
+                            <a class="nav-link text-white" href="{% url 'payslips' %}" style="font-weight: 200;">Payslips</a>
                         </li>
                     </ul> 
                 </div>  
             </div>       
         </nav>
 
+        {% block alert %}
+        {% endblock %}
+
         <nav class="navbar bg-custom mx-4 p-2 px-3 shadow-lg rounded" style="background-color: white">
             {% block directory %}
             {% endblock %}
         </nav>
 
-        <nav class="navbar mt-3 mx-4 p-3 shadow-lg rounded" style="background-color: white">
-            {% block content %}
-            {% endblock %}
-        </nav>
+        {% block create %}
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
 
     </body>
 
     <footer>
-        <nav class="navbar bg-custom fixed-bottom justify-content-center">
+        <nav class="navbar bg-custom justify-content-center">
             <div>&copy; 2025 Lazapee Payroll. All rights reserved to GORB.</div>
        </nav>
     </footer>
