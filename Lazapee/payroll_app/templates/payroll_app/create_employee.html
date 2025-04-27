@@ -1,6 +1,17 @@
 {% extends 'payroll_app/base.html' %}
 {% load static %}
 
+    {% block alert %}
+        {% if message %}
+            <div class="d-flex justify-content-center">
+                <div class="alert alert-warning alert-dismissible fade show" style="position: fixed; z-index: 1; width: 50%;" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
     {% block directory %}
         <ol class="breadcrumb mb-1">
             <li class="breadcrumb-item">
@@ -22,7 +33,7 @@
                         <label> Name: </label>
                         <input class="form-control mb-4" type="text" name="name" required>
                         <label> ID Number: </label>
-                        <input class="form-control mb-4" type="number" name="id_number" required>
+                        <input class="form-control mb-4" type="text" name="id_number" required>
                         <label> Rate: </label>
                         <input class="form-control mb-4" type="number" name="rate" required>
                         <label> Allowance (Optional): </label>

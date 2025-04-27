@@ -4,7 +4,11 @@
     {% block alert %}
         {% if message %}
             <div class="d-flex justify-content-center">
+            {% if message == 'Employee created!' %}
                 <div class="alert alert-success alert-dismissible fade show" style="position: fixed; z-index: 1; width: 50%;" role="alert">
+            {% elif message == 'Employee deleted.' %}
+                <div class="alert alert-danger alert-dismissible fade show" style="position: fixed; z-index: 1; width: 50%;" role="alert">
+            {% endif %}
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -21,7 +25,7 @@
     {% endblock %}
 
     {% block content %}
-        <div class="navbar mt-3 mx-4 p-3 shadow-lg rounded" style="background-color: white"></nav>
+        <div class="navbar mt-3 mx-4 p-3 shadow-lg rounded" style="background-color: white">
             <div class="w-100">
                 <div class="row align-items-center">
                     <div class="col">
