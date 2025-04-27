@@ -1,0 +1,17 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+    {% block directory %}
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item">
+                <a href="{% url 'payslips' %}" class="text-secondary text-decoration-none">Payslips</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-secondary text-decoration-none">View Payslip</a>
+            </li>
+        </ol> 
+    {% endblock %}
+
+    {% block content %}
+
+    {% endblock %}

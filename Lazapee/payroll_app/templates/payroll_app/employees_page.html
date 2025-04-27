@@ -1,0 +1,69 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+    {% block directory %}
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item">
+                <a href="{% url 'employees' %}" class="text-secondary text-decoration-none">Employees</a>
+            </li>
+        </ol> 
+    {% endblock %}
+
+    {% block content %}
+        <div class="w-100">
+            <div class="row">
+                <div class="col">
+                    <h4 class="mb-3">Employees</h4>
+                </div>
+                <div class="col">
+                    <form class="form-inline my-2 d-flex" method="POST"> {% csrf_token %}
+                        <input class="form-control" type="search" placeholder="Search for Employee / ID Number" name="Search">
+                        <button class="btn btn-outline-primary mx-2" type="submit">Search</button>
+                        <a class="btn btn-outline-success w-50" href="{% url 'create_employee' %}">Add Employee</a>
+                    </form>
+                </div>
+            </div>
+            <hr class="my-1">
+        </div>
+        <table class="table table-hover">
+            <thead class="table-light">
+                <th scope="col"> Name </th>
+                <th scope="col"> ID Number </th>
+                <th scope="col"> Rate </th>
+                <th scope="col"> Allowance </th>
+                <th scope="col"> Overtime </th>
+                <th scope="col"> Options </th>
+            </thead>
+            <tbody>
+                {% for e in employees %}
+                <tr>
+                    <td> {{ e.getName }} </td>
+                    <td> {{ e.getID }} </td>
+                    <td> {{ e.getRate }} </td>
+                    <td> {{ e.getAllowance }} </td>
+                    <td> {{ e.getOvertime }} </td>
+                    <td>
+                        <form method="POST">{% csrf_token %}
+                            <div class="row mb-2">
+                                <div class="col-8">
+                                    <input class="form-control" id="hours" name="hours" placeholder="Overtime Hours" min="0">
+                                </div>
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-success mr-1 w-100" name="button" value="button">Add Overtime</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-primary px-3 mr-3 w-100">Update</a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="#"  class="btn btn-danger px-3 mr-3 w-100">Delete</a>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}
