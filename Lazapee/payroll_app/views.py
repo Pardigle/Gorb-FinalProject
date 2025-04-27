@@ -44,11 +44,8 @@ def payslips_page(request):
 
         if button == "search":
             creds = request.POST.get("Search")
-            if creds.isdigit() == True:
-                employee = Employee.objects.filter(id_number=creds)
-                if employee:
-                    payslips = Payslip.objects.filter(id_number=employee[0]).order_by('-year', '-month_integer_reference', '-pay_cycle')
-            else:
+           
+            if ":" in creds:
                 creds = creds.split(":")
                 print(creds)
                 if "BEFORE" in creds:
@@ -76,7 +73,12 @@ def payslips_page(request):
                                 payslips = Payslip.objects.filter(month_integer_reference__range=(int(creds[1]), int(creds[3])), year__range=(int(creds[2]), int(creds[4]))).order_by('-year', 'month_integer_reference', 'pay_cycle')
                     elif len(creds[1]) == 4 and len(creds[2]) == 4:
                         payslips = Payslip.objects.filter(year__range=(int(creds[1]), int(creds[2]))).order_by('-year', '-month_integer_reference', '-pay_cycle')
-                return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
+            else:
+                employee = Employee.objects.filter(id_number=creds)
+                if employee:
+                    payslips = Payslip.objects.filter(id_number=employee[0]).order_by('-year', '-month_integer_reference', '-pay_cycle')
+
+            return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
         
         elif button == "create":
             months_as_integers = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10, 'November':11, 'December':12}
