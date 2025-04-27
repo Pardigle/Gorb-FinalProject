@@ -32,7 +32,7 @@ def employees_page(request):
 
 def payslips_page(request):
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    payslips = Payslip.objects.all().order_by('-year', 'month_integer_reference', 'pay_cycle')
+    payslips = Payslip.objects.all().order_by('-year', '-month_integer_reference', '-pay_cycle')
     employees = Employee.objects.all()
     if (request.method=="POST"):
         button = request.POST.get("button")
@@ -79,8 +79,9 @@ def payslips_page(request):
 
                     Payslip.objects.create(id_number=employee, month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=0, pag_ibig=pag_ibig, sss=0, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
                 
-                payslips = Payslip.objects.all().order_by('-year', 'month_integer_reference', 'pay_cycle')
+                payslips = Payslip.objects.all().order_by('-year', '-month_integer_reference', '-pay_cycle')
                 employees = Employee.objects.all()
+                Employee.objects.filter(id_number=id_number).update(overtime_pay=0)
                 return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!'})
     else:
         return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months})
