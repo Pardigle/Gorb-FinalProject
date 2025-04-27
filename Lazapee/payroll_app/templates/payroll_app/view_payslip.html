@@ -1,76 +1,176 @@
-{% extends 'payroll_app/base.html' %}
 {% load static %}
 
-    {% block directory %}
-        <ol class="breadcrumb mb-1">
-            <li class="breadcrumb-item">
-                <a href="{% url 'payslips' %}" class="text-secondary text-decoration-none">Payslips</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a class="text-secondary text-decoration-none">View Payslip</a>
-            </li>
-        </ol> 
-    {% endblock %}
+<html>
 
-    {% block content %}
+    <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+        <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static '/bootstrap/css/custom.css' %}">
+        <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    </head>
 
-    {% endblock %}
+    <body style="background-color: white;">
 
-    {% load static %}
+        <nav class="navbar navbar-dark bg-custom mb-3 sticky-top" style="background-color: #100c64;">
+            <div class="container-fluid justify-content-start">
+                <div>
+                    <a class="navbar-brand mb-0" href="{% url 'employees' %}" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600;">
+                        <img src="{% static '/images/Lazapee_logo.png' %}" style="max-width: 40px; max-height: fit-content"> 
+                        LAZAPEE Payroll 
+                    </a>
+                </div>
+                <div>
+                    <ul class="nav mb-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'employees' %}" style="font-weight: 200;">Employees</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'payslips' %}" style="font-weight: 200;">Payslips</a>
+                        </li>
+                    </ul> 
+                </div>  
+            </div>       
+        </nav>
 
-    <html>
-    
-        <head>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search"/>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
-            <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
-            <link rel="stylesheet" href="{% static '/bootstrap/css/custom.css' %}">
-            <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        </head>
-    
-        <body style="background-color: lightgray;">
-    
-            <nav class="navbar navbar-dark bg-custom mb-3 sticky-top shadow-lg" style="background-color: #100c64;">
-                <div class="container-fluid justify-content-start">
-                    <div>
-                        <a class="navbar-brand mb-0" href="{% url 'employees' %}" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600;">
-                            <img src="{% static '/images/Lazapee_logo.png' %}" style="max-width: 40px; max-height: fit-content"> 
-                            LAZAPEE Payroll 
-                        </a>
+        <div class="container" style="max-width: 75%;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        NAME: {{ payslip.id_number.getName }}
                     </div>
-                    <div>
-                        <ul class="nav mb-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{% url 'employees' %}" style="font-weight: 200;">Employees</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{% url 'payslips' %}" style="font-weight: 200;">Payslips</a>
-                            </li>
-                        </ul> 
-                    </div>  
-                </div>       
-            </nav>
-    
-            {% block alert %}
-            {% endblock %}
-    
-            <nav class="navbar bg-custom mx-4 p-2 px-3 shadow-lg rounded" style="background-color: white">
-                {% block directory %}
-                {% endblock %}
-            </nav>
-    
-            {% block create %}
-            {% endblock %}
-    
-            {% block content %}
-            {% endblock %}
-    
-        </body>
-    
-        <footer>
-            <nav class="navbar bg-custom justify-content-center">
-                <div>&copy; 2025 Lazapee Payroll. All rights reserved to GORB.</div>
-           </nav>
-        </footer>
-    
-    </html>
+                    <div class="col-5 text-end">
+                        DATE: {{ payslip.getMonth }} {{payslip.getDate_range}}, {{payslip.getYear}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        ID NUMBER: {{ payslip.getIDNumber }}
+                    </div>
+                    <div class="col-5 text-end">
+                        PAYSLIP ID: {{ payslip.pk }}
+                    </div>
+                </div>
+            </div>
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-6">
+                    </div>
+                    <div class="col-4 text-center">
+                        <h6> AMOUNT </h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h6> EARNINGS: </h6>
+                    </div>
+                </div>
+                <div class="mx-3">
+                    <div class="row">
+                        <div class="col-6">
+                            Base Pay
+                        </div>
+                        <div class="col-4">
+                            {{ base }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            Allowances
+                        </div>
+                        <div class="col-4">
+                            {{ payslip.id_number.getAllowance }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            Overtime
+                        </div>
+                        <div class="col-4">
+                            {{ payslip.getOvertime }}
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6> GROSS PAY </h6>
+                        </div>
+                        <div class="col-4 text-center">
+                            <h6> PHP {{ gross }} </h6>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3">
+                <div class="row">
+                    <div class="col">
+                        <h6> DEDUCTIONS: </h6>
+                    </div>
+                </div>
+                <div class="mx-3">
+                    <div class="row">
+                        <div class="col-6">
+                            W/HOLDING TAX
+                        </div>
+                        <div class="col-4">
+                            {{ payslip.getDeductions_tax }}
+                        </div>
+                    </div>
+                    {% if payslip.getPay_cycle == 2 %}
+                        <div class="row">
+                            <div class="col-6">
+                                PHILHEALTH
+                            </div>
+                            <div class="col-4">
+                                {{ payslip.getDeductions_tax }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                SSS
+                            </div>
+                            <div class="col-4">
+                                {{ payslip.getSSS }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-6">
+                                PAG-IBIG
+                            </div>
+                            <div class="col-4">
+                                {{ payslip.getPag_ibig }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <hr class="my-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6> TOTAL DEDUCTIONS </h6>
+                        </div>
+                        <div class="col-4 text-center">
+                            <h6> PHP {{ deduction }} </h6>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3">
+                <div class="row my-2">
+                    <div class="col-6">
+                        <h4> NET PAY: </h4>
+                    </div>
+                    <div class="col-4 text-center">
+                        <h4> PHP {{ payslip.getTotal_pay }} </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <br>
+    <br>
+    <br>
+    <footer>
+        <nav class="navbar bg-custom justify-content-center">
+            <div>&copy; 2025 Lazapee Payroll. All rights reserved to GORB.</div>
+        </nav>
+    </footer>
+
+</html>
