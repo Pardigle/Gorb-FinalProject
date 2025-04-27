@@ -47,7 +47,7 @@ def payslips_page(request):
             if creds.isdigit() == True:
                 employee = Employee.objects.filter(id_number=creds)
                 if employee:
-                    payslips = Payslip.objects.filter(id_number=employee[0]).order_by('-year', 'month_integer_reference', 'pay_cycle')
+                    payslips = Payslip.objects.filter(id_number=employee[0]).order_by('-year', '-month_integer_reference', '-pay_cycle')
             else:
                 creds = creds.split(":")
                 print(creds)
@@ -59,7 +59,7 @@ def payslips_page(request):
                             else:
                                 payslips = Payslip.objects.filter(month_integer_reference__lte=int(creds[1])).order_by('-year', 'month_integer_reference', 'pay_cycle')
                         else:
-                            payslips = Payslip.objects.filter(year__lte=int(creds[1])).order_by('-year', 'month_integer_reference', 'pay_cycle')
+                            payslips = Payslip.objects.filter(year__lte=int(creds[1])).order_by('-year', '-month_integer_reference', '-pay_cycle')
                 elif "AFTER" in creds:
                     if len(creds) > 1:
                         if len(creds[1]) == 2:
@@ -68,14 +68,14 @@ def payslips_page(request):
                             else:
                                 payslips = Payslip.objects.filter(month_integer_reference__gte=int(creds[1])).order_by('-year', 'month_integer_reference', 'pay_cycle')
                         else:
-                            payslips = Payslip.objects.filter(year__lte=int(creds[1])).order_by('-year', 'month_integer_reference', 'pay_cycle')
+                            payslips = Payslip.objects.filter(year__gte=int(creds[1])).order_by('-year', '-month_integer_reference', '-pay_cycle')
                 elif "BETWEEN" in creds:
                     if len(creds) == 5:
                         if len(creds[1]) == 2 and len(creds[3]) == 2:
                             if len(creds[2]) == 4 and len(creds[4]) == 4:
                                 payslips = Payslip.objects.filter(month_integer_reference__range=(int(creds[1]), int(creds[3])), year__range=(int(creds[2]), int(creds[4]))).order_by('-year', 'month_integer_reference', 'pay_cycle')
-                        elif len(creds[1]) == 4 and len(creds[2]) == 4:
-                            payslips = Payslip.objects.filter(year__range=(int(creds[1]), int(creds[2]))).order_by('-year', 'month_integer_reference', 'pay_cycle')
+                    elif len(creds[1]) == 4 and len(creds[2]) == 4:
+                        payslips = Payslip.objects.filter(year__range=(int(creds[1]), int(creds[2]))).order_by('-year', '-month_integer_reference', '-pay_cycle')
                 return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
         
         elif button == "create":
