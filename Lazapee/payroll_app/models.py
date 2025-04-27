@@ -46,7 +46,7 @@ class Payslip(models.Model):
     total_pay = models.FloatField()
 
     def getIDNumber(self):
-        return self.id_number
+        return self.id_number.getID()
     
     def getMonth(self):
         return self.month
