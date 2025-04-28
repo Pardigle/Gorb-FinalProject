@@ -83,6 +83,8 @@ def payslips_page(request):
                 payslips = payslips.order_by('-year', '-month_integer_reference', '-pay_cycle')
             elif sorting == "old":
                 payslips = payslips.order_by('year', 'month_integer_reference', 'pay_cycle')
+            elif sorting == "recent":
+                payslips = payslips.order_by('-pk')
             
             return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
         
