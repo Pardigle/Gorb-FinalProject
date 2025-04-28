@@ -47,8 +47,7 @@ def payslips_page(request):
             creds = request.POST.get("Search")
            
             if ":" in creds:
-                creds = creds.split(":")
-                print(creds)
+                creds = creds.upper().split(":")
                 if "BEFORE" in creds:
                     if len(creds) > 1:
                         if len(creds[1]) == 2:
