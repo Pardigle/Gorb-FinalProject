@@ -37,7 +37,7 @@ def employees_page(request):
 def payslips_page(request):
     global history
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    payslips = Payslip.objects.all()
+    payslips = Payslip.objects.all().order_by('-pk')
     employees = Employee.objects.all()
     if (request.method=="POST"):
         button = request.POST.get("button")
@@ -124,7 +124,6 @@ def payslips_page(request):
                 history.append("Created payslip for {} for {} {}, {}, Cycle {}".format(employee.getName(), month, date_range, year, cycle))
                 if len(history) > 5:
                     history.pop(0)
-                payslips = Payslip.objects.all().order_by('-year', '-month_integer_reference', '-pay_cycle')
                 employees = Employee.objects.all()
                 Employee.objects.filter(id_number=id_number).update(overtime_pay=0)
                 return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history})
