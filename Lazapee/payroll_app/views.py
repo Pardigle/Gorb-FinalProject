@@ -99,13 +99,13 @@ def payslips_page(request):
             if Payslip.objects.filter(id_number=employee, month=month, year=year, pay_cycle=cycle).exists():
                 return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip already exists!', 'history':history})
             else:
+                rate = employee.getRate()
+                overtime = employee.getOvertime()
+                allowance = employee.getAllowance()
                 if cycle == 2:
                     date_range = '16-31' if month in ['January', 'March', 'May', 'August', 'October', 'December'] else '16-29' if (month == 'February' and (year%4==0 and (year%400==0 or year%100!=0))) else '16-28' if month=='February' else '16-30'
                     philhealth = employee.getRate() * 0.04
                     sss = employee.getRate() * 0.045
-                    overtime = employee.getOvertime()
-                    rate = employee.getRate()
-                    allowance = employee.getAllowance()
                     deductions_tax = ((rate/2) + allowance + overtime - philhealth - sss) * 0.2
                     total_pay = ((rate/2) + allowance + overtime - philhealth - sss) - deductions_tax
 
@@ -113,9 +113,6 @@ def payslips_page(request):
                
                 elif cycle == 1:
                     date_range = '1-15'
-                    overtime = employee.getOvertime()
-                    rate = employee.getRate()
-                    allowance = employee.getAllowance()
                     pag_ibig = 100
                     deductions_tax = ((rate/2) + allowance + overtime - pag_ibig) * 0.2
                     total_pay = ((rate/2) + allowance + overtime - pag_ibig) - deductions_tax
