@@ -66,12 +66,12 @@
                                         <input type="number" class="form-control" id="hours" name="hours" placeholder="Overtime Hours" min="0">
                                     </div>
                                     <div class="col-4">
-                                        <button type="submit" class="btn btn-outline-success mr-1 w-100" name="button" value="add_overtime">Add Overtime</button>
+                                        <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-outline-primary px-3 mr-3 w-100">Update</a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-8">
-                                        <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-outline-primary px-3 mr-3 w-100">Update</a>
+                                        <button type="submit" class="btn btn-outline-success mr-1 w-100" name="button" value="add_overtime">Add Overtime</button>
                                     </div>
                                     <div class="col-4">
                                         <a href="{% url 'delete_employee' pk=e.pk %}" class="btn btn-outline-danger px-3 mr-3 w-100">Delete</a>

@@ -13,7 +13,7 @@
         }
 
         .div-animation {
-        animation: fade 0.6s ease-out;
+        animation: fade 0.4s ease-out;
         }
     </style>
 
@@ -24,8 +24,9 @@
         <link rel="stylesheet" href="{% static '/bootstrap/css/custom.css' %}">
         <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     </head>
-    <!---
-    -->
+
+    <!--- The error here is not an actual error guys ah, css just doesn't like the django static format. -->
+
     <body style="background-image:url('{% static '/images/background.png' %}');">
         <nav class="navbar navbar-dark bg-custom mb-3 sticky-top shadow-lg" style="background-color: #100c64;">
             <div class="container-fluid d-flex justify-content-start">
