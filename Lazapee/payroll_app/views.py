@@ -67,12 +67,14 @@ def payslips_page(request):
                         elif len(creds[1]) == 4 and creds[1].isdigit():
                             payslips = Payslip.objects.filter(year__gte=int(creds[1]))
                 elif "BETWEEN" in creds:
-                    if len(creds) == 5 and creds[1].isdigit() and creds[2].isdigit() and creds[3].isdigit() and creds[4].isdigit():
-                        if len(creds[1]) == 2 and len(creds[3]) == 2:
-                            if len(creds[2]) == 4 and len(creds[4]) == 4:
-                                payslips = Payslip.objects.filter(month_integer_reference__range=(int(creds[1]), int(creds[3])), year__range=(int(creds[2]), int(creds[4]))).order_by('-year', 'month_integer_reference', 'pay_cycle')
-                    elif len(creds[1]) == 4 and len(creds[2]) == 4 and creds[1].isdigit() and creds[2].isdigit():
-                        payslips = Payslip.objects.filter(year__range=(int(creds[1]), int(creds[2])))
+                    if len(creds) == 5:
+                        if creds[1].isdigit() and creds[2].isdigit() and creds[3].isdigit() and creds[4].isdigit():
+                            if len(creds[1]) == 2 and len(creds[3]) == 2:
+                                if len(creds[2]) == 4 and len(creds[4]) == 4:
+                                    payslips = Payslip.objects.filter(month_integer_reference__range=(int(creds[1]), int(creds[3])), year__range=(int(creds[2]), int(creds[4]))).order_by('-year', 'month_integer_reference', 'pay_cycle')
+                    elif len(creds) == 3:
+                        if len(creds[1]) == 4 and len(creds[2]) == 4 and creds[1].isdigit() and creds[2].isdigit():
+                            payslips = Payslip.objects.filter(year__range=(int(creds[1]), int(creds[2])))
             else:
                 employee = Employee.objects.filter(id_number=creds)
                 if employee:
