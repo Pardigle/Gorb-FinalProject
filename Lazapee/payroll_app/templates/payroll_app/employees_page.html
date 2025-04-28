@@ -63,7 +63,7 @@
                                 <div class="row mb-2">
                                     <div class="col-8">
                                         <input type="hidden" name="employee_id" value="{{ e.getID }}">
-                                        <input type="number" class="form-control" id="hours" name="hours" placeholder="Overtime Hours" min="0">
+                                        <input type="number" class="form-control" id="hours" name="hours" placeholder="Overtime Hours" min="0" required>
                                     </div>
                                     <div class="col-4">
                                         <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-outline-primary px-3 mr-3 w-100">Update</a>
