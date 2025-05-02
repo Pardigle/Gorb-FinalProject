@@ -32,6 +32,7 @@ class Employee(models.Model):
     
 class Payslip(models.Model):
     id_number = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee_name = models.CharField(max_length = 300)
     month = models.CharField(max_length = 300)
     month_integer_reference = models.IntegerField()
     date_range = models.CharField(max_length = 300)

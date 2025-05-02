@@ -34,6 +34,7 @@
                             <label class="w-50">Payroll for:</label>
                             <select class="form-control w-100" name="employee" required>
                                 <option value="" disabled selected hidden>Choose...</option>
+                                    <option value="all">All employees</option>
                                 {% for e in employees %}
                                     <option value="{{ e.getID }}">{{ e.getName }}</option>
                                 {% endfor %}
@@ -111,5 +112,10 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% if not payslips %}
+            <div class="container-fluid justify-content-center align-items-center"">
+                <p>No payslips generated.</p>
+            </div>
+            {% endif %}
         </div>
     {% endblock %}

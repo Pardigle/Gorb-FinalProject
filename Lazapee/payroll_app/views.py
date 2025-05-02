@@ -90,43 +90,53 @@ def payslips_page(request):
             return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
         
         elif button == "create":
+
             months_as_integers = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10, 'November':11, 'December':12}
             id_number = request.POST.get("employee")
             month = request.POST.get("month")
             year = int(request.POST.get("year"))
             cycle = int(request.POST.get("cycle"))
-            employee = Employee.objects.get(id_number=id_number)
             month_integer_reference = months_as_integers[month]
-            
-            if Payslip.objects.filter(id_number=employee, month=month, year=year, pay_cycle=cycle).exists():
-                return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip already exists!', 'history':history})
+
+            if id_number == "all":
+                employee_list = Employee.objects.all()
             else:
-                rate = employee.getRate()
-                overtime = employee.getOvertime()
-                allowance = employee.getAllowance()
-                if cycle == 2:
-                    date_range = '16-31' if month in ['January', 'March', 'May', 'August', 'October', 'December'] else '16-29' if (month == 'February' and (year%4==0 and (year%400==0 or year%100!=0))) else '16-28' if month=='February' else '16-30'
-                    philhealth = employee.getRate() * 0.04
-                    sss = employee.getRate() * 0.045
-                    deductions_tax = ((rate/2) + allowance + overtime - philhealth - sss) * 0.2
-                    total_pay = ((rate/2) + allowance + overtime - philhealth - sss) - deductions_tax
+                employee_list = [Employee.objects.get(id_number=id_number)]
 
-                    Payslip.objects.create(id_number=employee, month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=philhealth, pag_ibig=0, sss=sss, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
-               
-                elif cycle == 1:
-                    date_range = '1-15'
-                    pag_ibig = 100
-                    deductions_tax = ((rate/2) + allowance + overtime - pag_ibig) * 0.2
-                    total_pay = ((rate/2) + allowance + overtime - pag_ibig) - deductions_tax
+            for e in employee_list:
+                employee = e
+                if Payslip.objects.filter(id_number=employee, month=month, year=year, pay_cycle=cycle).exists() and len(employee_list) == 1:
+                    return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip already exists!', 'history':history})
+                elif Payslip.objects.filter(id_number=employee, month=month, year=year, pay_cycle=cycle).exists() and len(employee_list) > 1:
+                    pass
+                else:
+                    rate = employee.getRate()
+                    overtime = employee.getOvertime()
+                    allowance = employee.getAllowance()
+                    if cycle == 2:
+                        date_range = '16-31' if month in ['January', 'March', 'May', 'July','August', 'October', 'December'] else '16-29' if (month == 'February' and (year%4==0 and (year%400==0 or year%100!=0))) else '16-28' if month=='February' else '16-30'
+                        philhealth = employee.getRate() * 0.04
+                        sss = employee.getRate() * 0.045
+                        deductions_tax = ((rate/2) + allowance + overtime - philhealth - sss) * 0.2
+                        total_pay = ((rate/2) + allowance + overtime - philhealth - sss) - deductions_tax
 
-                    Payslip.objects.create(id_number=employee, month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=0, pag_ibig=pag_ibig, sss=0, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
+                        Payslip.objects.create(id_number=employee, employee_name = employee.getName(), month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=philhealth, pag_ibig=0, sss=sss, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
                 
-                history.append("Created payslip for {} for {} {}, {}, Cycle {}".format(employee.getName(), month, date_range, year, cycle))
-                if len(history) > 5:
-                    history.pop(0)
-                employees = Employee.objects.all()
-                Employee.objects.filter(id_number=id_number).update(overtime_pay=0)
-                return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history})
+                    elif cycle == 1:
+                        date_range = '1-15'
+                        pag_ibig = 100
+                        deductions_tax = ((rate/2) + allowance + overtime - pag_ibig) * 0.2
+                        total_pay = ((rate/2) + allowance + overtime - pag_ibig) - deductions_tax
+
+                        Payslip.objects.create(id_number=employee, employee_name = employee.getName(), month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=0, pag_ibig=pag_ibig, sss=0, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
+                    
+                    history.append("Created payslip for {} for {} {}, {}, Cycle {}".format(employee.getName(), month, date_range, year, cycle))
+                    if len(history) > 5:
+                        history.pop(0)
+                    Employee.objects.filter(id_number=employee.getID()).update(overtime_pay=0)
+
+            employees = Employee.objects.all()
+            return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history})
     else:
         return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
 
@@ -163,11 +173,10 @@ def update_employee(request, pk):
         button = request.POST.get("button")
         name = request.POST.get("name")
         rate = float(request.POST.get("rate"))
-        id_number = int(request.POST.get("id_number"))
         allowance = request.POST.get("allowance")
 
         if button == "submit":
-            Employee.objects.filter(pk=pk).update(name=name, rate=rate, id_number=id_number, allowance=allowance)
+            Employee.objects.filter(pk=pk).update(name=name, rate=rate, allowance=allowance)
             request.session['message'] = "Employee details updated!"
             return redirect('employees')
     else:

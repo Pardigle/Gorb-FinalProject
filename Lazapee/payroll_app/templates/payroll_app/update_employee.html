@@ -22,7 +22,7 @@
                         <label> Name: </label>
                         <input class="form-control mb-4" type="text" name="name" required value="{{ employee.getName }}">
                         <label> ID Number: </label>
-                        <input class="form-control mb-4" type="number" name="id_number" required value="{{ employee.getID }}">
+                        <input class="form-control mb-4" type="number" name="id_number" value="{{ employee.getID }}" disabled>
                         <label> Rate: </label>
                         <input class="form-control mb-4" type="number" name="rate" required value="{{ employee.getRate }}">
                         <label> Allowance (Optional): </label>
