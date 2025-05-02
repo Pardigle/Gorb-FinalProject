@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Payslip
 
 global history
-history = []
+history = [] ##This is for an additional functionality where the user knows the 5 latest generated payslips.
 
 # Create your views here.
 def employees_page(request):

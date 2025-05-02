@@ -32,9 +32,9 @@ class Employee(models.Model):
     
 class Payslip(models.Model):
     id_number = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    employee_name = models.CharField(max_length = 300)
+    employee_name = models.CharField(max_length = 300) ##ADDITIONAL FIELD (Why? So the name of employee at the time of generation is hard-coded in each payslip.)
     month = models.CharField(max_length = 300)
-    month_integer_reference = models.IntegerField()
+    month_integer_reference = models.IntegerField() ##ADDITIONAL FIELD (Why? So we are able to sort the payslips in manner of time. E.g. Jan = 1, Feb = 2, ...)
     date_range = models.CharField(max_length = 300)
     year = models.CharField(max_length = 300)
     pay_cycle = models.IntegerField()
