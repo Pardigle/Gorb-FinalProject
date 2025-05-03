@@ -174,6 +174,8 @@ def update_employee(request, pk):
         name = request.POST.get("name")
         rate = float(request.POST.get("rate"))
         allowance = request.POST.get("allowance")
+        if allowance == "":
+            allowance = 0
 
         if button == "submit":
             Employee.objects.filter(pk=pk).update(name=name, rate=rate, allowance=allowance)
