@@ -133,7 +133,7 @@ def payslips_page(request):
                     history.append("Created payslip for {} for {} {}, {}, Cycle {}".format(employee.getName(), month, date_range, year, cycle))
                     if len(history) > 5:
                         history.pop(0)
-                    Employee.objects.filter(id_number=employee.getID()).resetOvertime()
+                    Employee.objects.filter(id_number=employee.getID()).update(overtime_pay=0)
 
             employees = Employee.objects.all()
             return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history})
