@@ -4,8 +4,8 @@
   <h3>Login</h3>
   <form method="POST" action="{% url 'login' %}">
     {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" class="form-control mb-2">
-    <input type="password" name="password" placeholder="Password" class="form-control mb-2">
+    <input type="text" name="username" placeholder="Username" class="form-control mb-2" required>
+    <input type="password" name="password" placeholder="Password" class="form-control mb-2" required>
     {% if error %}
         <p class="text-danger">{{ error }}</p>
     {% endif %}

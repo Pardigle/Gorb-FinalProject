@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 
 <html>
 
@@ -72,7 +73,7 @@
                             Base Pay
                         </div>
                         <div class="col-4">
-                            {{ base }}
+                            {{ base|floatformat:2|intcomma }}
                         </div>
                     </div>
                     <div class="row">
@@ -80,7 +81,7 @@
                             Allowances
                         </div>
                         <div class="col-4">
-                            {{ payslip.id_number.getAllowance }}
+                            {{ payslip.id_number.getAllowance|floatformat:2|intcomma }}
                         </div>
                     </div>
                     <div class="row">
@@ -88,7 +89,7 @@
                             Overtime
                         </div>
                         <div class="col-4">
-                            {{ payslip.getOvertime }}
+                            {{ payslip.getOvertime|floatformat:2|intcomma }}
                         </div>
                     </div>
                     <hr class="my-3">
@@ -97,7 +98,7 @@
                             <h6> GROSS PAY </h6>
                         </div>
                         <div class="col-4 text-center">
-                            <h6> PHP {{ gross }} </h6>
+                            <h6> PHP {{ gross|floatformat:2|intcomma }} </h6>
                         </div>
                     </div>
                 </div>
@@ -113,7 +114,7 @@
                             W/HOLDING TAX
                         </div>
                         <div class="col-4">
-                            {{ payslip.getDeductions_tax }}
+                            {{ payslip.getDeductions_tax|floatformat:2|intcomma }}
                         </div>
                     </div>
                     {% if payslip.getPay_cycle == 2 %}
@@ -122,7 +123,7 @@
                                 PHILHEALTH
                             </div>
                             <div class="col-4">
-                                {{ payslip.getDeductions_tax }}
+                                {{ payslip.getDeductions_tax|floatformat:2|intcomma }}
                             </div>
                         </div>
                         <div class="row">
@@ -130,7 +131,7 @@
                                 SSS
                             </div>
                             <div class="col-4">
-                                {{ payslip.getSSS }}
+                                {{ payslip.getSSS|floatformat:2|intcomma }}
                             </div>
                         </div>
                     {% else %}
@@ -139,7 +140,7 @@
                                 PAG-IBIG
                             </div>
                             <div class="col-4">
-                                {{ payslip.getPag_ibig }}
+                                {{ payslip.getPag_ibig|floatformat:2|intcomma }}
                             </div>
                         </div>
                     {% endif %}
@@ -149,7 +150,7 @@
                             <h6> TOTAL DEDUCTIONS </h6>
                         </div>
                         <div class="col-4 text-center">
-                            <h6> PHP {{ deduction }} </h6>
+                            <h6> PHP {{ deduction|floatformat:2|intcomma }} </h6>
                         </div>
                     </div>
                 </div>
@@ -159,7 +160,7 @@
                         <h4> NET PAY: </h4>
                     </div>
                     <div class="col-4 text-center">
-                        <h4> PHP {{ payslip.getTotal_pay }} </h4>
+                        <h4> PHP {{ payslip.getTotal_pay|floatformat:2|intcomma }} </h4>
                     </div>
                 </div>
             </div>
