@@ -1,10 +1,71 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Employee, Payslip
+from .models import Employee, Payslip, Account
 
 global history
 history = [] ##This is for an additional functionality where the user knows the 5 latest generated payslips.
+account_id = 0 # Globan Session Variable
 
-# Create your views here.
+def login_page(request):
+    global account_id
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        try:
+            account = Account.objects.get(username=username, password=password)
+            account_id = account.id
+            return redirect('employees', pk=account_id) #insert correct redirect page here
+        except Account.DoesNotExist:
+            return render(request, 'payroll_app/login.html', {'error': 'Invalid login'})
+    return render(request, 'payroll_app/login.html')
+
+def signup_page(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        if Account.objects.filter(username=username).exists():
+            return render(request, 'payroll_app/signup.html', {'error': 'Account already exists'})
+        if password == "":
+            return render(request, 'payroll_app/signup.html', {'error': 'Password cannot be blank'})
+        Account.objects.create (username=username, password=password)
+        return render(request, 'payroll_app/login.html', {'message': 'Account created successfully'})
+    return render(request, 'payroll_app/signup.html')
+
+
+def logout_page(request):
+    global account_id
+    account_id = 0
+    return redirect('login')
+
+def manage_account(request, pk):
+    account = get_object_or_404(Account, pk=pk)
+    return render(request, 'payroll_app/manage_account.html', {'account': account})
+
+def change_password(request, pk):
+    account = get_object_or_404(Account, pk=pk)
+    if request.method == 'POST':
+        old_pw = request.POST.get('old_pw')
+        new_pw1 = request.POST.get('new_pw1')
+        new_pw2 = request.POST.get('new_pw2')
+
+        if old_pw != account.password:
+            return render(request, 'payroll_app/change_password.html', {'account': account, 'error': 'Current password incorrect.'})
+        if new_pw1 != new_pw2:
+            return render(request, 'payroll_app/change_password.html', {'account': account, 'error': 'New passwords do not match.'})
+        if new_pw1 == "" or new_pw2 == "":
+            return render(request, 'payroll_app/change_password.html', {'account': account, 'error': 'New password cannot be empty.'})
+
+        account.password = new_pw1
+        account.save()
+        return redirect('manage_account', pk=pk)
+
+    return render(request, 'payroll_app/change_password.html', {'account': account})
+
+def delete_account(request, pk):
+    global account_id
+    Account.objects.filter(pk=pk).delete()
+    account_id = 0
+    return redirect('login')
+
 def employees_page(request):
     global history
     if (request.method=="POST"):

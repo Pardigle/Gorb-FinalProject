@@ -1,0 +1,10 @@
+{% extends 'payroll_app/base.html' %}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+  <h4>Manage Account</h4>
+  <p><b>Username:</b> {{ account.username }}</p>
+  <a href="{% url 'change_password' pk=account.id %}" class="btn btn-warning">Change Password</a>
+  <a href="{% url 'delete_account' pk=account.id %}" class="btn btn-danger">Delete Account</a>
+  <a href="{% url 'basic_list' pk=account.id %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}
