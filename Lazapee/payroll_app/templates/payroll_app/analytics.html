@@ -1,0 +1,30 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+{% block directory %}
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item">
+            <a href="{% url 'employees' %}" class="text-secondary text-decoration-none">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-secondary text-decoration-none">Analytics</a>
+        </li>
+    </ol> 
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex justify-content-center w-100 div-animation">
+    <div class="navbar mt-3 mx-4 p-3 shadow-lg rounded w-70" style="background-color: white">
+        <div class="container-fluid">
+            <h2>Analytics</h2>
+        </div>
+        <div class="container-fluid justify-content-center">
+            <div class="container-fluid d-flex h-100 w-100">
+                {% for v in table_values %}
+                    <button class="btn btn-primary mx-2" style="min_height: {{ v }}; background-color: #100c64;"></button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
