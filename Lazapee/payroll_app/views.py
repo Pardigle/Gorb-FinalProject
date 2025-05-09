@@ -5,29 +5,6 @@ global history
 global account
 history = [] ##This is for an additional functionality where the user knows the 5 latest generated payslips.
 account = '' # Globan Session Variable
-
-def analytics(request):
-    global account
-    global history
-    if account:
-        employees = Employee.objects.all()
-        payslips = Payslip.objects.all()
-        raw_values = []
-        table_values = []
-
-        for e in employees:
-            employee_payslips = len(payslips.filter(id_number=e))
-            raw_values.append(employee_payslips)
-        
-        total = sum(raw_values)
-
-        for v in raw_values:
-            percent_per_value = v / total
-            table_values.append(percent_per_value)
-
-        return render(request, 'payroll_app/analytics.html', {'employees':employees, 'payslips':payslips, 'history':history, 'account':account, 'table_values':table_values})
-    else:
-        return redirect('login')
     
 def login_page(request):
     global account
