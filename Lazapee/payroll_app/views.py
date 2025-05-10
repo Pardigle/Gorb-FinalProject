@@ -2,21 +2,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Payslip, Account
 
 global history
+global account
 history = [] ##This is for an additional functionality where the user knows the 5 latest generated payslips.
-account_id = 0 # Globan Session Variable
-
+account = '' # Globan Session Variable
+    
 def login_page(request):
     global account_id
-    if account_id != 0:
-        return redirect('employees')
-
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
         try:
             account = Account.objects.get(username=username, password=password)
-            account_id = account.id
-            return redirect('employees', pk=account_id) #insert correct redirect page here
+            return redirect('employees')
         except Account.DoesNotExist:
             return render(request, 'payroll_app/login.html', {'error': 'Invalid login'})
     return render(request, 'payroll_app/login.html')
@@ -35,8 +32,8 @@ def signup_page(request):
 
 
 def logout_page(request):
-    global account_id
-    account_id = 0
+    global account
+    account = ''
     return redirect('login')
 
 def manage_account(request, pk):
@@ -64,13 +61,14 @@ def change_password(request, pk):
     return render(request, 'payroll_app/change_password.html', {'account': account})
 
 def delete_account(request, pk):
-    global account_id
+    global account
     Account.objects.filter(pk=pk).delete()
-    account_id = 0
+    account = 0
     return redirect('login')
 
 def employees_page(request):
     global history
+    global account
     if (request.method=="POST"):
         button = request.POST.get("button")
 
@@ -79,10 +77,10 @@ def employees_page(request):
             
             if creds.isdigit() == True:
                 employees = Employee.objects.filter(id_number=creds)
-                return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'history':history})
+                return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'history':history, 'account':account})
             else:
                 employees = Employee.objects.filter(name__icontains=creds)
-                return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'history':history})
+                return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'history':history, 'account':account})
         
         elif button == "add_overtime":
             id = request.POST.get("employee_id")
@@ -91,15 +89,16 @@ def employees_page(request):
             Employee.objects.filter(id_number=id).update(overtime_pay=overtime)
 
             employees = Employee.objects.all()
-            return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'history':history})
+            return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'history':history, 'account':account})
 
     else:
         employees = Employee.objects.all()
         message = request.session.pop('message', None)
-        return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'message':message, 'history':history})
+        return render(request, 'payroll_app/employees_page.html', {'employees':employees, 'message':message, 'history':history, 'account':account})
 
 def payslips_page(request):
     global history
+    global account
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     payslips = Payslip.objects.all().order_by('-pk')
     employees = Employee.objects.all()
@@ -151,7 +150,7 @@ def payslips_page(request):
             elif sorting == "recent":
                 payslips = payslips.order_by('-pk')
             
-            return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
+            return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history, 'account':account})
         
         elif button == "create":
 
@@ -170,7 +169,7 @@ def payslips_page(request):
             for e in employee_list:
                 employee = e
                 if Payslip.objects.filter(id_number=employee, month=month, year=year, pay_cycle=cycle).exists() and len(employee_list) == 1:
-                    return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip already exists!', 'history':history})
+                    return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip already exists!', 'history':history, 'account':account})
                 elif Payslip.objects.filter(id_number=employee, month=month, year=year, pay_cycle=cycle).exists() and len(employee_list) > 1:
                     pass
                 else:
@@ -200,12 +199,13 @@ def payslips_page(request):
                     Employee.objects.filter(id_number=employee.getID()).update(overtime_pay=0)
 
             employees = Employee.objects.all()
-            return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history})
+            return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history, 'account':account})
     else:
         return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
 
 def create_employee(request):
     global history
+    global account
     if (request.method=="POST"):
         button = request.POST.get("button")
         name = request.POST.get("name")
@@ -215,7 +215,7 @@ def create_employee(request):
 
         if button == "submit":
             if Employee.objects.filter(id_number=id_number).exists():
-                return render(request, 'payroll_app/create_employee.html', {'message':'ID already taken!', 'history':history})
+                return render(request, 'payroll_app/create_employee.html', {'message':'ID already taken!', 'history':history, 'account':account})
             else:
                 if not allowance:
                     Employee.objects.create(name=name, rate=rate, id_number=id_number, allowance=0, overtime_pay=0)
@@ -224,7 +224,7 @@ def create_employee(request):
                 request.session['message'] = "Employee created!"
                 return redirect('employees')
 
-    return render(request, 'payroll_app/create_employee.html', {'history':history})
+    return render(request, 'payroll_app/create_employee.html', {'history':history, 'account':account})
 
 def delete_employee(request, pk):
     Employee.objects.filter(pk=pk).delete()
@@ -233,6 +233,7 @@ def delete_employee(request, pk):
 
 def update_employee(request, pk):
     global history
+    global account
     if (request.method=="POST"):
         button = request.POST.get("button")
         name = request.POST.get("name")
@@ -247,12 +248,13 @@ def update_employee(request, pk):
             return redirect('employees')
     else:
         employee = get_object_or_404(Employee, pk=pk)
-        return render(request, 'payroll_app/update_employee.html', {'employee':employee, 'history':history})
+        return render(request, 'payroll_app/update_employee.html', {'employee':employee, 'history':history, 'account':account})
 
 def view_payslip(request, pk):
     global history
+    global account
     payslip = get_object_or_404(Payslip, pk=pk)
     base = payslip.id_number.getRate() / 2
     gross_pay = base + payslip.id_number.getAllowance() + payslip.getOvertime()
     total_deductions = payslip.getDeductions_tax() + payslip.getDeductions_health() + payslip.getSSS() + payslip.getPag_ibig()
-    return render(request, 'payroll_app/view_payslip.html', {'payslip':payslip, 'base':base, 'gross':gross_pay, 'deduction':total_deductions, 'history':history})
+    return render(request, 'payroll_app/view_payslip.html', {'payslip':payslip, 'base':base, 'gross':gross_pay, 'deduction':total_deductions, 'history':history, 'account':account})

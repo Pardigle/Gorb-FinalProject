@@ -5,6 +5,6 @@
   <p><b>Username:</b> {{ account.username }}</p>
   <a href="{% url 'change_password' pk=account.id %}" class="btn btn-warning">Change Password</a>
   <a href="{% url 'delete_account' pk=account.id %}" class="btn btn-danger">Delete Account</a>
-  <a href="{% url 'basic_list' pk=account.id %}" class="btn btn-secondary">Back</a>
+  <a href="{% url 'employees' %}" class="btn btn-secondary">Back</a>
 </div>
 {% endblock %}

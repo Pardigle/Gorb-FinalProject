@@ -25,7 +25,7 @@
         <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     </head>
 
-    <!--- The error here is not an actual error guys ah, css just doesn't like the django static format. -->
+    <!--- The error here is not an actual error guys ah, it just doesn't like the django static format. -->
 
     <body style="background-image:url('{% static '/images/background.png' %}');">
         <nav class="navbar navbar-dark bg-custom mb-3 sticky-top shadow-lg" style="background-color: #100c64;">
@@ -45,6 +45,11 @@
                         <li class="nav-item" style="z-index: 3;">
                             <a class="nav-link text-white" href="{% url 'payslips' %}" style="font-weight: 200;">Payslips</a>
                         </li>
+                        {% if account %}
+                            <li class="nav-item" style="z-index: 3;">
+                                <a class="nav-link text-white" href="{% url 'manage_account' pk=account.pk %}" style="font-weight: 200;">Manage Account</a>
+                            </li>
+                        {% endif %}
                     </ul> 
                 </div>
             </div>
