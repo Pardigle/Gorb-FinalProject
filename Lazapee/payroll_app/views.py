@@ -7,6 +7,9 @@ account_id = 0 # Globan Session Variable
 
 def login_page(request):
     global account_id
+    if account_id != 0:
+        return redirect('employees')
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
