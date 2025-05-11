@@ -8,6 +8,7 @@ account = '' # Globan Session Variable
     
 def login_page(request):
     global account_id
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -69,6 +70,9 @@ def delete_account(request, pk):
 def employees_page(request):
     global history
     global account
+    if account_id == 0:
+        return redirect('login')
+    
     if (request.method=="POST"):
         button = request.POST.get("button")
 
