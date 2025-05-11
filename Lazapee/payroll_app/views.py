@@ -5,7 +5,12 @@ global history
 global account
 history = [] ##This is for an additional functionality where the user knows the 5 latest generated payslips.
 account = '' # Globan Session Variable
-    
+
+# Helper function to check if user is authenticated
+def is_authenticated():
+    global account
+    return account != '' and account != 0
+
 def login_page(request):
     global account_id
 
@@ -38,10 +43,16 @@ def logout_page(request):
     return redirect('login')
 
 def manage_account(request, pk):
+    if not is_authenticated():
+        return redirect('login')
+        
     account = get_object_or_404(Account, pk=pk)
     return render(request, 'payroll_app/manage_account.html', {'account': account})
 
 def change_password(request, pk):
+    if not is_authenticated():
+        return redirect('login')
+        
     account = get_object_or_404(Account, pk=pk)
     if request.method == 'POST':
         old_pw = request.POST.get('old_pw')
@@ -62,6 +73,9 @@ def change_password(request, pk):
     return render(request, 'payroll_app/change_password.html', {'account': account})
 
 def delete_account(request, pk):
+    if not is_authenticated():
+        return redirect('login')
+        
     global account
     Account.objects.filter(pk=pk).delete()
     account = 0
@@ -70,6 +84,7 @@ def delete_account(request, pk):
 def employees_page(request):
     global history
     global account
+    
     if account_id == 0:
         return redirect('login')
     
@@ -103,6 +118,10 @@ def employees_page(request):
 def payslips_page(request):
     global history
     global account
+    
+    if not is_authenticated():
+        return redirect('login')
+        
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     payslips = Payslip.objects.all().order_by('-pk')
     employees = Employee.objects.all()
@@ -205,11 +224,15 @@ def payslips_page(request):
             employees = Employee.objects.all()
             return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'message':'Payslip successfully created!', 'history':history, 'account':account})
     else:
-        return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history})
+        return render(request, 'payroll_app/payslips_page.html', {'payslips':payslips, 'employees':employees, 'months':months, 'history':history, 'account':account})
 
 def create_employee(request):
     global history
     global account
+    
+    if not is_authenticated():
+        return redirect('login')
+        
     if (request.method=="POST"):
         button = request.POST.get("button")
         name = request.POST.get("name")
@@ -231,6 +254,9 @@ def create_employee(request):
     return render(request, 'payroll_app/create_employee.html', {'history':history, 'account':account})
 
 def delete_employee(request, pk):
+    if not is_authenticated():
+        return redirect('login')
+        
     Employee.objects.filter(pk=pk).delete()
     request.session['message'] = "Employee deleted."
     return redirect('employees')
@@ -238,6 +264,10 @@ def delete_employee(request, pk):
 def update_employee(request, pk):
     global history
     global account
+    
+    if not is_authenticated():
+        return redirect('login')
+        
     if (request.method=="POST"):
         button = request.POST.get("button")
         name = request.POST.get("name")
@@ -247,7 +277,14 @@ def update_employee(request, pk):
             allowance = 0
 
         if button == "submit":
+            employee = get_object_or_404(Employee, pk=pk)
+            # Update the employee details
             Employee.objects.filter(pk=pk).update(name=name, rate=rate, allowance=allowance)
+            
+            # Update the employee name in all associated payslips
+            if employee.getName() != name:
+                Payslip.objects.filter(id_number=employee).update(employee_name=name)
+                
             request.session['message'] = "Employee details updated!"
             return redirect('employees')
     else:
@@ -257,8 +294,34 @@ def update_employee(request, pk):
 def view_payslip(request, pk):
     global history
     global account
+    
+    if not is_authenticated():
+        return redirect('login')
+        
     payslip = get_object_or_404(Payslip, pk=pk)
     base = payslip.id_number.getRate() / 2
     gross_pay = base + payslip.id_number.getAllowance() + payslip.getOvertime()
     total_deductions = payslip.getDeductions_tax() + payslip.getDeductions_health() + payslip.getSSS() + payslip.getPag_ibig()
     return render(request, 'payroll_app/view_payslip.html', {'payslip':payslip, 'base':base, 'gross':gross_pay, 'deduction':total_deductions, 'history':history, 'account':account})
+
+def delete_payslip(request, pk):
+    if not is_authenticated():
+        return redirect('login')
+    
+    global history
+    payslip = get_object_or_404(Payslip, pk=pk)
+    
+    # Add deletion to history
+    history.append("Deleted payslip for {} for {} {}, {}, Cycle {}".format(
+        payslip.employee_name, 
+        payslip.getMonth(), 
+        payslip.getDate_range(), 
+        payslip.getYear(), 
+        payslip.getPay_cycle()
+    ))
+    if len(history) > 5:
+        history.pop(0)
+    
+    payslip.delete()
+    request.session['message'] = "Payslip deleted successfully."
+    return redirect('payslips')
