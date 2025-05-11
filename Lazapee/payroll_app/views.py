@@ -12,8 +12,7 @@ def is_authenticated():
     return account != '' and account != 0
 
 def login_page(request):
-    global account_id
-
+    global account
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -85,7 +84,7 @@ def employees_page(request):
     global history
     global account
     
-    if account_id == 0:
+    if not is_authenticated():
         return redirect('login')
     
     if (request.method=="POST"):

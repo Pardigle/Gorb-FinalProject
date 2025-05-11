@@ -1,10 +1,23 @@
 {% extends 'payroll_app/base.html' %}
+
+{% block directory %} 
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item">
+                <a class="text-secondary text-decoration-none">Manage Account</a>
+            </li>
+        </ol> 
+{% endblock %}
+
 {% block content %}
-<div class="col-md-6 offset-md-3">
-  <h4>Manage Account</h4>
-  <p><b>Username:</b> {{ account.username }}</p>
-  <a href="{% url 'change_password' pk=account.id %}" class="btn btn-warning">Change Password</a>
-  <a href="{% url 'delete_account' pk=account.id %}" class="btn btn-danger">Delete Account</a>
-  <a href="{% url 'employees' %}" class="btn btn-secondary">Back</a>
+<div class="container-fluid d-flex justify-content-center m-3 w-100 div-animation">
+        <div class="card w-50 shadow-lg">
+            <h2 class="card-header">Manage Account</h2>
+            <div class="card-body">
+              <p><b>Username:</b> {{ account.username }}</p>
+              <a href="{% url 'change_password' pk=account.id %}" class="btn btn-warning">Change Password</a>
+              <a href="{% url 'delete_account' pk=account.id %}" class="btn btn-danger">Delete Account</a>
+              <a href="{% url 'employees' %}" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
 </div>
 {% endblock %}
