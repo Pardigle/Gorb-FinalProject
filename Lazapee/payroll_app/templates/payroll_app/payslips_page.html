@@ -50,7 +50,7 @@
                                 {% endfor %}
                             </select>
                             <label class="w-50 mx-2">Year:</label>
-                            <input class="form-control" type="text" name="year" id="current-year" value="2025" readonly style="background-color: #f8f9fa; font-weight: bold;">
+                            <input class="form-control" type="text" name="year" id="current-year" value="" readonly style="background-color: #f8f9fa; font-weight: bold;">
                             <label class="w-50 mx-2">Cycle:</label>
                             <select class="form-control w-100" name="cycle" required>
                                 <option value="" disabled selected hidden>Choose...</option>
@@ -119,10 +119,7 @@
             </div>
             {% endif %}
         </div>
-    {% endblock %}
-    
-    {% block scripts %}
-    <script>
+        <script>
         document.addEventListener('DOMContentLoaded', function() {
             var currentYear = new Date().getFullYear();
             
@@ -136,5 +133,6 @@
                 }
             }, 3600000);
         });
-    </script>
+        </script>
     {% endblock %}
+    
