@@ -205,7 +205,7 @@ def payslips_page(request):
                         deductions_tax = ((rate/2) + allowance + overtime - philhealth - sss) * 0.2
                         total_pay = ((rate/2) + allowance + overtime - philhealth - sss) - deductions_tax
 
-                        Payslip.objects.create(id_number=employee, employee_name = employee.getName(), month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=philhealth, pag_ibig=0, sss=sss, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
+                        Payslip.objects.create(id_number=employee, month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=philhealth, pag_ibig=0, sss=sss, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
                 
                     elif cycle == 1:
                         date_range = '1-15'
@@ -213,7 +213,7 @@ def payslips_page(request):
                         deductions_tax = ((rate/2) + allowance + overtime - pag_ibig) * 0.2
                         total_pay = ((rate/2) + allowance + overtime - pag_ibig) - deductions_tax
 
-                        Payslip.objects.create(id_number=employee, employee_name = employee.getName(), month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=0, pag_ibig=pag_ibig, sss=0, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
+                        Payslip.objects.create(id_number=employee, month=month, date_range=date_range, year=year, pay_cycle=cycle, rate=rate, earnings_allowance=allowance, deductions_tax=deductions_tax, deductions_health=0, pag_ibig=pag_ibig, sss=0, overtime=overtime, total_pay=total_pay, month_integer_reference=month_integer_reference)
                     
                     history.append("Created payslip for {} for {} {}, {}, Cycle {}".format(employee.getName(), month, date_range, year, cycle))
                     if len(history) > 5:
@@ -279,10 +279,6 @@ def update_employee(request, pk):
             employee = get_object_or_404(Employee, pk=pk)
             # Update the employee details
             Employee.objects.filter(pk=pk).update(name=name, rate=rate, allowance=allowance)
-            
-            # Update the employee name in all associated payslips
-            if employee.getName() != name:
-                Payslip.objects.filter(id_number=employee).update(employee_name=name)
                 
             request.session['message'] = "Employee details updated!"
             return redirect('employees')
@@ -298,8 +294,8 @@ def view_payslip(request, pk):
         return redirect('login')
         
     payslip = get_object_or_404(Payslip, pk=pk)
-    base = payslip.id_number.getRate() / 2
-    gross_pay = base + payslip.id_number.getAllowance() + payslip.getOvertime()
+    base = payslip.getCycleRate()
+    gross_pay = base + payslip.getEarnings_allowance() + payslip.getOvertime()
     total_deductions = payslip.getDeductions_tax() + payslip.getDeductions_health() + payslip.getSSS() + payslip.getPag_ibig()
     return render(request, 'payroll_app/view_payslip.html', {'payslip':payslip, 'base':base, 'gross':gross_pay, 'deduction':total_deductions, 'history':history, 'account':account})
 
@@ -312,7 +308,7 @@ def delete_payslip(request, pk):
     
     # Add deletion to history
     history.append("Deleted payslip for {} for {} {}, {}, Cycle {}".format(
-        payslip.employee_name, 
+        payslip.id_number.getName(), 
         payslip.getMonth(), 
         payslip.getDate_range(), 
         payslip.getYear(), 
