@@ -1,5 +1,6 @@
 {% extends 'payroll_app/base.html' %}
 {% load static %}
+{% load humanize %}
 
     {% block alert %}
         {% if message %}
@@ -104,7 +105,7 @@
                             <td> {{ p.getIDNumber }} </td>
                             <td> {{ p.getMonth }} {{ p.getDate_range }}, {{ p.getYear }} </td>
                             <td> {{ p.getPay_cycle }} </td>
-                            <td> {{ p.getTotal_pay }} </td>
+                            <td> ₱ {{ p.getTotal_pay|floatformat:2|intcomma }} </td>
                             <td>
                                 <a href="{% url 'view_payslip' pk=p.pk %}" class="btn btn-outline-info px-3 mr-3 mb-1 w-100">View</a>
                                 <a href="{% url 'delete_payslip' pk=p.pk %}" class="btn btn-outline-danger px-3 mr-3 w-100" onclick="return confirm('Are you sure you want to delete this payslip?')">Delete</a>
@@ -135,4 +136,3 @@
         });
         </script>
     {% endblock %}
-    

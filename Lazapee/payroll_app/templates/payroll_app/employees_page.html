@@ -1,4 +1,5 @@
-{% extends 'payroll_app/base.html' %} {% load static %} {% block alert %} {% if message %}
+{% extends 'payroll_app/base.html' %} {% load static %} {% load humanize %} {% block alert %} 
+{% if message %}
 <div class="d-flex justify-content-center">
   {% if message == 'Employee created!' or message == 'Employee details updated!'%}
   <div
@@ -89,9 +90,9 @@
       <tr>
         <td>{{ e.getName }}</td>
         <td>{{ e.getID }}</td>
-        <td>{{ e.getRate }}</td>
-        <td>{{ e.getAllowance }}</td>
-        <td>{{ e.getOvertime }}</td>
+        <td>₱ {{ e.getRate|floatformat:2|intcomma }}</td>
+        <td>₱ {{ e.getAllowance|floatformat:2|intcomma }}</td>
+        <td>₱ {{ e.getOvertime|floatformat:2|intcomma }}</td>
         <td>
           <form method="POST">
             {% csrf_token %}
